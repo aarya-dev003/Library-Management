@@ -1,0 +1,51 @@
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.env
+.env.*
+venv/
+env/
+virtualenv/
+*.egg-info/
+.eggs/
+
+# Poetry
+poetry.lock
+*.toml
+*.pyo
+
+# Logs
+*.log
+
+# Alembic
+alembic/versions/*.pyc
+alembic/versions/*.pyo
+
+# Database
+*.sqlite3
+*.db
+
+# Pytest
+htmlcov/
+.coverage
+*.cover
+*.pytest_cache/
+.cache/
+tests/__pycache__/
+
+# IDEs
+.idea/
+.vscode/
+*.sublime-workspace
+
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+*.seed
+*.tar
+logs/
