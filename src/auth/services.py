@@ -1,9 +1,8 @@
-from src.auth.models import User
 from src.core.security import hash_password, verify_password, create_access_token
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from src.auth.schemas import UserCreate, UserResponse, UserLogin, TokenData
-from src.auth.models import User
+from src.core.models import User
 
 def create_user(user: UserCreate, db : Session) -> UserResponse:
     existing = db.query(User).filter(User.email == user.email).first()

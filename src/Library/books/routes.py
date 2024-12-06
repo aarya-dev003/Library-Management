@@ -1,16 +1,17 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from src.core.database import get_db
-from src.library.books.services import fetch_requests, process_requests, fetch_user_history
+from src.library.books.services import fetch_requests, process_requests, fetch_user_history, list_books, borrow_request, fetch_personal_history
 from src.utils.rbac import verify_librarian, verify_user
-from .schemas import BorrowRequest
-from .services import create_user, fetch_requests, process_requests, fetch_user_history, list_books, borrow_request, fetch_personal_history
+from .schemas import BorrowRequest, BookResponse
+from typing import List
+
 
 router = APIRouter()
 
 
 # Librarian Routes
 
-@router.get('/requests', dependencies= [Depends(verify_librarian)])
+@router.get('/requests', dependencies= [Depends(verify_librarian)], status_code=status.HTTP_200_OK)
 async def view_borrow_requests(db = Depends(get_db)):
     return fetch_requests(db)
 
@@ -25,7 +26,7 @@ async def user_history(user_id : int, db = Depends(get_db)):
 
 # User Routes
 
-@router.get("/books", dependencies= [Depends(verify_user)])
+@router.get("/books", dependencies= [Depends(verify_user)],status_code=status.HTTP_200_OK, response_model=List[BookResponse])
 async def get_books(db = Depends(get_db)):
     return list_books(db)
 

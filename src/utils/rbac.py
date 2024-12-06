@@ -11,7 +11,7 @@ def verify_role(required_role : str):
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
             if payload.get("role") != required_role:
-                raise HTTPException(status_code= 403, detail="Access Denied")
+                raise HTTPException(status_code= 403, detail="Access Denied: Insufficient Privileges")
         except JWTError:
             raise HTTPException(status_code=401, detail="Invalid Token")
     

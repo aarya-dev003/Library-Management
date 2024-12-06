@@ -6,7 +6,7 @@ from src.utils.rbac import verify_librarian
 
 router = APIRouter()
 
-@router.post('/register', status_code= status.HTTP_201_CREATED, response_model = UserResponse)
+@router.post('/register', dependencies=[Depends(verify_librarian)], status_code= status.HTTP_201_CREATED, response_model = UserResponse)
 async def register(user: UserCreate, db = Depends(get_db)):
     return create_user(user, db)
 
