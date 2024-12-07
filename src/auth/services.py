@@ -37,7 +37,8 @@ def authenticate_user(user_data: UserLogin, db : Session) -> TokenData:
     
     token = create_access_token({
         "email" : user.email,
-        "role" : user.role
+        "role" : user.role,
+        "id" : user.id
     })
 
     return TokenData(

@@ -8,7 +8,6 @@ from alembic import context
 
 from src.core.config import settings
 from sqlmodel import SQLModel, create_engine
-from src.core.modelss import *
 from src.core.models import *
 
 
