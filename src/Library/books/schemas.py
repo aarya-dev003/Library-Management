@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
-from datetime import date
+from datetime import date,datetime
 
 
 class BookResponse(BaseModel):
@@ -51,5 +51,18 @@ class Request_Out(BaseModel):
     borrow_start_date : date
     return_date : date
     status : str
+    class Config:
+        from_attributes = True
+
+from pydantic import BaseModel
+from typing import Optional
+
+class BorrowHistoryResponse(BaseModel):
+    book_id: int
+    book_title: str
+    borrow_date: datetime
+    return_date: Optional[datetime]
+    status: str
+
     class Config:
         from_attributes = True

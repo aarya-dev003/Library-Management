@@ -43,6 +43,7 @@ class BorrowHistory(SQLModel, table=True):
     user_id: int = Field(foreign_key="user.id", nullable=False)
     borrow_date: date = Field(nullable=False)
     return_date: date = Field(nullable=False)
+    status : str = Field(nullable=False, default= "borrowed")
 
     book: Book = Relationship(back_populates="borrow_history")
     user: "User" = Relationship(back_populates="borrow_history")

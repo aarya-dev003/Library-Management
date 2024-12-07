@@ -6,6 +6,7 @@ from src.core.models import User
 from src.library.books import schemas
 from fastapi import Depends
 from src.core.database import get_db
+from datetime import datetime
 
 
 #  librarian service
@@ -25,17 +26,18 @@ def process_requests(request_id : int, action : schemas.BorrowApproved, db: Sess
     if action.action == "approved":
         request.status = "approved"
 
-        borrow_history = models.BorrowHistory(
+        borrow_record = models.BorrowHistory(
             book_id= request.book_id,
             user_id = request.user_id,
             borrow_date= request.borrow_start_date,
-            return_date= request.return_date
+            return_date= request.return_date,
+            status= "borrowed"
         )
 
         book.available = False
 
-
         
+        db.add(borrow_record)
         db.commit()
         db.refresh(request)
 
@@ -160,3 +162,35 @@ def create_borrow_request(
 
 def fetch_personal_history(user_id : int, db: Session):
     return db.query(models.BorrowHistory).filter(models.BorrowHistory.user_id == user_id).all()
+
+
+def return_book(borrow_id: int, user_id: int, db: Session) -> schemas.BorrowHistoryResponse:
+    borrow_record = db.query(models.BorrowHistory).filter(models.BorrowHistory.id == borrow_id).first()
+    if not borrow_record:
+        raise HTTPException(status_code=404, detail="Borrow record not found.")
+    
+ 
+    if borrow_record.user_id != user_id:
+        raise HTTPException(status_code=403, detail="Not authorized to return this book.")
+
+  
+    borrow_record.return_date = datetime.utcnow()
+    borrow_record.status = "returned"
+    db.commit()
+
+   
+    book = db.query(models.Book).filter(models.Book.id == borrow_record.book_id).first()
+    if not book:
+        raise HTTPException(status_code=404, detail="Book not found.")
+    
+    book.available = True
+    db.commit()
+
+  
+    return schemas.BorrowHistoryResponse(
+        book_id=borrow_record.book_id,
+        book_title=book.title,
+        borrow_date=borrow_record.borrow_date,
+        return_date=borrow_record.return_date,
+        status=borrow_record.status
+    )
