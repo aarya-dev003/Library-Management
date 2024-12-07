@@ -8,12 +8,14 @@ from src.admin.admin import UserAdmin, BorrowRequestAdmin, BorrowHistroyAdmin, B
 from src.core.database import engine
 from sqladmin import Admin
 from src.admin.admin_auth import AdminAuth
+from .middleware import add_cors_middleware
 
 
 app = FastAPI(
     title= "Library Management"
 )
 app.add_middleware(SessionMiddleware, secret_key="your-secret-key")
+add_cors_middleware(app)
 admin = Admin(app = app , engine=engine, authentication_backend=AdminAuth(secret_key="secret"))
 
 @app.get('/')
